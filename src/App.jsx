@@ -1,4 +1,4 @@
-import Login from './Components/login';
+import Login from './Components/Login';
 import Signup from './Components/signup';
 import TodoApp from './Components/TodoApp';
 import ForgotPassword from './Components/ForgotPassword';
