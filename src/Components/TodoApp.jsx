@@ -1,27 +1,70 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const TodoApp = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
 
-  const handleAddTask = (e) => {
+  const handleAddTask = async(e) => {
     e.preventDefault();
     if (task.trim()) {
-      setTasks([...tasks, { id: Date.now(), text: task, completed: false }]);
+      let response = await axios.post('https://todo-app-backend-kappa-ecru.vercel.app/add', { task: task }, { withCredentials: true });
+      setTasks([...tasks, { id: response.data.TodoId, text: task, completed: false }]);
       setTask('');
     }
   };
 
-  const handleToggleComplete = (taskId) => {
-    setTasks(tasks.map(task => (task.id === taskId ? { ...task, completed: !task.completed } : task)));
+
+  useEffect( () => {const fetchTodos = async () => {
+    try {
+      let response = await axios.get('https://todo-app-backend-kappa-ecru.vercel.app/todos', { withCredentials: true });
+      setTasks(response.data.todos);
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+    }
+  };
+  fetchTodos(); // Call the async function},[]);
+  
+  }, [handleAddTask]);
+
+
+  
+  const handleToggleComplete = async (taskId,isChecked) => {
+    await axios.put('https://todo-app-backend-kappa-ecru.vercel.app/update', { taskId, isChecked }, { withCredentials: true });
+    setTasks(tasks.map(task => (task._id === taskId ? { ...task, isChecked: !task.isChecked } : task)));
   };
 
-  const handleDeleteTask = (taskId) => {
-    setTasks(tasks.filter(task => task.id !== taskId));
+  const handleDeleteTask = async(taskId) => {
+    await axios.delete('https://todo-app-backend-kappa-ecru.vercel.app/delete', {
+      data: { taskId },
+      withCredentials: true,
+    });
+    setTasks(tasks.filter(task => task._id !== taskId));
+  };
+
+  const navigate = useNavigate();
+  const handleLogout =async () => {
+    // Handle logout logic here (e.g., clear tokens or navigate to login)
+    let response = await axios.post('https://todo-app-backend-kappa-ecru.vercel.app/logout', {}, { withCredentials: true });
+    if (response.status === 200) {
+      console.log("User logged out");
+      navigate('/login');
+  }else{ 
+    console.log("Logout failed");
+  }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4 sm:px-6 lg:px-8 relative">
+      {/* Logout Button at Top-Left */}
+      <button
+        onClick={handleLogout}
+        className="absolute top-5 right-6 text-sm font-medium text-red-500 hover:text-red-400 border border-red-500 px-3 py-1 rounded-[5px]"
+      >
+        Logout
+      </button>
+
       <div className="max-w-md w-full space-y-8 bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700">
         {/* Header */}
         <div>
@@ -60,22 +103,22 @@ const TodoApp = () => {
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <li
-                key={task.id}
+                key={task._id}
                 className="flex justify-between items-center bg-gray-700 border border-gray-600 rounded-lg px-4 py-2"
               >
                 <div className="flex items-center space-x-4">
                   <input
                     type="checkbox"
-                    checked={task.completed}
-                    onChange={() => handleToggleComplete(task.id)}
+                    checked={task.isChecked}
+                    onChange={() => handleToggleComplete(task._id, task.isChecked)}
                     className="h-4 w-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
                   />
-                  <span className={`${task.completed ? 'line-through text-gray-500' : 'text-white'}`}>
-                    {task.text}
+                  <span className={`${task.isChecked ? 'line-through text-gray-500' : 'text-white'}`}>
+                    {task.task}
                   </span>
                 </div>
                 <button
-                  onClick={() => handleDeleteTask(task.id)}
+                  onClick={() => handleDeleteTask(task._id)}
                   className="text-red-500 hover:text-red-400"
                 >
                   <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

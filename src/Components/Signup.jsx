@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import {useNavigate, Link} from 'react-router-dom';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +11,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,15 +19,20 @@ const Signup = () => {
     setError('');
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Make a POST request to the backend
+      const response = await axios.post('https://todo-app-backend-kappa-ecru.vercel.app/signup', formData);
 
-      if (formData.email && formData.password) {
+      if (response.status === 201) {
         console.log('Signup successful');
-      } else {
-        setError('All fields are required');
+        navigate('/login');
+        // Redirect to login or handle successful signup as needed
       }
-    } catch {
-      setError('Something went wrong. Please try again.');
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message); // Use server error message
+      } else {
+        setError('Something went wrong. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -103,20 +111,6 @@ const Signup = () => {
                 </button>
               </div>
             </div>
-
-            {/* Terms and Conditions */}
-            <div className="flex items-center">
-              <input
-                id="terms"
-                name="terms"
-                type="checkbox"
-                required
-                className="h-4 w-4 text-purple-600 bg-gray-700 border-gray-600 rounded"
-              />
-              <label htmlFor="terms" className="ml-2 block text-sm text-gray-300">
-                I agree to the terms and conditions
-              </label>
-            </div>
           </div>
 
           {/* Error Message */}
@@ -140,9 +134,9 @@ const Signup = () => {
           {/* Login link */}
           <div className="text-sm text-center">
             <span className="text-gray-400">Already have an account?</span>{' '}
-            <a href="#" className="font-medium text-purple-400 hover:text-purple-300">
+            <Link to="/login" className="font-medium text-purple-400 hover:text-purple-300">
               Log in
-            </a>
+            </Link>
           </div>
         </form>
       </div>

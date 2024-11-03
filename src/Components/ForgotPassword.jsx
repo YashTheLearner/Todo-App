@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -71,9 +72,9 @@ const ForgotPassword = () => {
           </button>
 
           <div className="text-sm text-center mt-4">
-            <a href="#" className="font-medium text-purple-400 hover:text-purple-300">
-              Back to Sign in
-            </a>
+            <Link to="/login" className="font-medium text-purple-400 hover:text-purple-300">
+              Back to Login
+            </Link>
           </div>
         </form>
       </div>
