@@ -1,5 +1,5 @@
 import Login from './Components/Login';
-import Signup from './Components/signup';
+import Signup from './Components/Signup';
 import TodoApp from './Components/TodoApp';
 import ForgotPassword from './Components/ForgotPassword';
 import EnterOtp from './Components/EnterOtp';
