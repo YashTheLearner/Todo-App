@@ -63,8 +63,8 @@ const NewPassword = () => {
       } else {
         setError("Invalid OTP or email.");
       }
-    } catch {
-      setError("Failed to reset password. Please try again.");
+    } catch(err) {
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
