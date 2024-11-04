@@ -5,59 +5,78 @@ import { Link, useNavigate } from 'react-router-dom';
 const TodoApp = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
+  const navigate = useNavigate();
 
-  const handleAddTask = async(e) => {
+  const handleAddTask = async (e) => {
     e.preventDefault();
     if (task.trim()) {
-      let response = await axios.post(`${process.env.REACT_APP_API_URL}/add`, { task: task }, { withCredentials: true });
-      setTasks([...tasks, { id: response.data.TodoId, text: task, completed: false }]);
-      setTask('');
+      try {
+        let response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/add`,
+          { task: task },
+          { withCredentials: true }
+        );
+        setTasks([...tasks, { _id: response.data.TodoId, task, isChecked: false }]);
+        setTask('');
+      } catch (error) {
+        console.error('Error adding task:', error);
+      }
     }
   };
 
-
-  useEffect( () => {const fetchTodos = async () => {
-    try {
-      let response = await axios.get(`${process.env.REACT_APP_API_URL}/todos`, { withCredentials: true });
-      setTasks(response.data.todos);
-    } catch (error) {
-      console.error('Error fetching todos:', error);
-    }
-  };
-  fetchTodos(); // Call the async function},[]);
-  
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/todos`, { withCredentials: true });
+        setTasks(response.data.todos);
+      } catch (error) {
+        console.error('Error fetching todos:', error);
+      }
+    };
+    fetchTodos(); 
   }, []);
 
-
-  
-  const handleToggleComplete = async (taskId,isChecked) => {
-    await axios.put(`${process.env.REACT_APP_API_URL}/update`, { taskId, isChecked }, { withCredentials: true });
-    setTasks(tasks.map(task => (task._id === taskId ? { ...task, isChecked: !task.isChecked } : task)));
+  const handleToggleComplete = async (taskId, isChecked) => {
+    try {
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/update`,
+        { taskId, isChecked: !isChecked },
+        { withCredentials: true }
+      );
+      setTasks(tasks.map(task => (task._id === taskId ? { ...task, isChecked: !task.isChecked } : task)));
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
   };
 
-  const handleDeleteTask = async(taskId) => {
-    await axios.delete(`${process.env.REACT_APP_API_URL}/delete`, {
-      data: { taskId },
-      withCredentials: true,
-    });
-    setTasks(tasks.filter(task => task._id !== taskId));
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/delete`, {
+        data: { taskId },
+        withCredentials: true,
+      });
+      setTasks(tasks.filter(task => task._id !== taskId));
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
   };
 
-  const navigate = useNavigate();
-  const handleLogout =async () => {
-    // Handle logout logic here (e.g., clear tokens or navigate to login)
-    let response = await axios.post(`${process.env.REACT_APP_API_URL}/logout`, {}, { withCredentials: true });
-    if (response.status === 200) {
-      console.log("User logged out");
-      navigate('/login');
-  }else{ 
-    console.log("Logout failed");
-  }
+  const handleLogout = async () => {
+    try {
+      let response = await axios.post(`${process.env.REACT_APP_API_URL}/logout`, {}, { withCredentials: true });
+      if (response.status === 200) {
+        console.log("User logged out");
+        navigate('/login');
+      } else {
+        console.log("Logout failed");
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4 sm:px-6 lg:px-8 relative">
-      {/* Logout Button at Top-Left */}
       <button
         onClick={handleLogout}
         className="absolute top-5 right-6 text-sm font-medium text-red-500 hover:text-red-400 border border-red-500 px-3 py-1 rounded-[5px]"
@@ -66,7 +85,6 @@ const TodoApp = () => {
       </button>
 
       <div className="max-w-md w-full space-y-8 bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700">
-        {/* Header */}
         <div>
           <h2 className="text-center text-3xl font-bold text-white">
             Todo List
@@ -76,7 +94,6 @@ const TodoApp = () => {
           </p>
         </div>
 
-        {/* Add Task Form */}
         <form className="space-y-6" onSubmit={handleAddTask}>
           <div className="space-y-4">
             <div className="relative rounded-md shadow-sm">
@@ -98,7 +115,6 @@ const TodoApp = () => {
           </button>
         </form>
 
-        {/* Task List */}
         <ul className="space-y-4 mt-6">
           {tasks.length > 0 ? (
             tasks.map((task) => (
@@ -129,8 +145,8 @@ const TodoApp = () => {
             ))
           ) : (
             <p className="text-gray-400 text-center">
-  No tasks added yet. <Link to="/login" className="text-blue-500">Login</Link>
-</p>
+              No tasks added yet. <Link to="/login" className="text-blue-500">Login</Link>
+            </p>
           )}
         </ul>
       </div>
