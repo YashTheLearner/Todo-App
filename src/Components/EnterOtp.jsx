@@ -7,8 +7,7 @@ const EnterOtp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
-  const navigate = useNavigate(); // Use useNavigate outside the handleOtpSubmit function
+  const navigate = useNavigate();
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +20,7 @@ const EnterOtp = () => {
 
       if (response.status === 200) {
         setSuccessMessage('OTP verified successfully');
-        navigate('/login'); // Use the navigate function correctly here
+        navigate('/login');
       } else {
         setError('Invalid OTP. Please try again.');
       }
@@ -32,7 +31,7 @@ const EnterOtp = () => {
         setError('Something went wrong. Please try again.');
       }
     } finally {
-      setIsLoading(false); // Ensure loading state is reset
+      setIsLoading(false);
     }
   };
 
@@ -41,22 +40,15 @@ const EnterOtp = () => {
       <div className="max-w-md w-full space-y-8 bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700">
         {/* Header */}
         <div>
-          <h2 className="text-center text-3xl font-bold text-white">
-            Enter OTP
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Check your email for the OTP
-          </p>
+          <h2 className="text-center text-3xl font-bold text-white">Enter OTP</h2>
+          <p className="mt-2 text-center text-sm text-gray-400">Check your email for the OTP</p>
         </div>
 
         {/* OTP Form */}
         <form className="mt-8 space-y-6" onSubmit={handleOtpSubmit}>
           <div className="space-y-4">
-            {/* OTP Input */}
             <div>
-              <label htmlFor="otp" className="block text-sm font-medium text-gray-300">
-                OTP
-              </label>
+              <label htmlFor="otp" className="block text-sm font-medium text-gray-300">OTP</label>
               <input
                 id="otp"
                 name="otp"
@@ -110,6 +102,16 @@ const EnterOtp = () => {
             onClick={() => alert('Resend OTP functionality goes here')}
           >
             Resend OTP
+          </button>
+        </div>
+
+        {/* Go Back Button */}
+        <div className="text-sm text-center mt-4">
+          <button
+            className="font-medium text-purple-400 hover:text-purple-300"
+            onClick={() => navigate(-1)}
+          >
+            Go Back
           </button>
         </div>
       </div>
