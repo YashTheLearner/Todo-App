@@ -49,7 +49,7 @@ const TodoApp = () => {
     let response = await axios.post(`${process.env.REACT_APP_API_URL}/logout`, {}, { withCredentials: true });
     if (response.status === 200) {
       console.log("User logged out");
-      // navigate('/login');
+      navigate('/login');
   }else{ 
     console.log("Logout failed");
   }
