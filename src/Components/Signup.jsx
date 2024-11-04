@@ -24,7 +24,7 @@ const Signup = () => {
 
       if (response.status === 201) {
         console.log('Signup successful');
-        navigate('/verify');
+        navigate('/enterotp');
         // Redirect to login or handle successful signup as needed
       }
     } catch (error) {
