@@ -128,7 +128,9 @@ const TodoApp = () => {
               </li>
             ))
           ) : (
-            <p className="text-gray-400 text-center"><Link to="/login"/>No tasks added yet.<Link/></p>
+            <p className="text-gray-400 text-center">
+  No tasks added yet. <Link to="/login" className="text-blue-500">Login</Link>
+</p>
           )}
         </ul>
       </div>
