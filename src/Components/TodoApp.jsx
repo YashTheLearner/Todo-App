@@ -30,7 +30,7 @@ const TodoApp = () => {
         let response = await axios.get(`${process.env.REACT_APP_API_URL}/todos`, { withCredentials: true });
         setTasks(response.data.todos);
       } catch (error) {
-        console.error('Error fetching todos:', error);
+        // console.log('Error fetching todos:', error);
         if (error.response.status === 401)
           navigate('/login');
       }
