@@ -31,6 +31,8 @@ const TodoApp = () => {
         setTasks(response.data.todos);
       } catch (error) {
         console.error('Error fetching todos:', error);
+        if (error.response.status === 401)
+          navigate('/login');
       }
     };
     fetchTodos(); 
