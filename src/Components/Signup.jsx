@@ -20,7 +20,7 @@ const Signup = () => {
 
     try {
       // Make a POST request to the backend
-      const response = await axios.post('https://todo-app-backend-kappa-ecru.vercel.app/signup', formData);
+      const response = await axios.post(`{process.env.REACT_APP_API_URL}/signup`, formData);
 
       if (response.status === 201) {
         console.log('Signup successful');

@@ -9,7 +9,7 @@ const TodoApp = () => {
   const handleAddTask = async(e) => {
     e.preventDefault();
     if (task.trim()) {
-      let response = await axios.post('https://todo-app-backend-kappa-ecru.vercel.app/add', { task: task }, { withCredentials: true });
+      let response = await axios.post(`{process.env.REACT_APP_API_URL}/add`, { task: task }, { withCredentials: true });
       setTasks([...tasks, { id: response.data.TodoId, text: task, completed: false }]);
       setTask('');
     }
@@ -18,7 +18,7 @@ const TodoApp = () => {
 
   useEffect( () => {const fetchTodos = async () => {
     try {
-      let response = await axios.get('https://todo-app-backend-kappa-ecru.vercel.app/todos', { withCredentials: true });
+      let response = await axios.get(`{process.env.REACT_APP_API_URL}/todos`, { withCredentials: true });
       setTasks(response.data.todos);
     } catch (error) {
       console.error('Error fetching todos:', error);
@@ -26,17 +26,17 @@ const TodoApp = () => {
   };
   fetchTodos(); // Call the async function},[]);
   
-  }, [handleAddTask]);
+  }, []);
 
 
   
   const handleToggleComplete = async (taskId,isChecked) => {
-    await axios.put('https://todo-app-backend-kappa-ecru.vercel.app/update', { taskId, isChecked }, { withCredentials: true });
+    await axios.put(`{process.env.REACT_APP_API_URL}/update`, { taskId, isChecked }, { withCredentials: true });
     setTasks(tasks.map(task => (task._id === taskId ? { ...task, isChecked: !task.isChecked } : task)));
   };
 
   const handleDeleteTask = async(taskId) => {
-    await axios.delete('https://todo-app-backend-kappa-ecru.vercel.app/delete', {
+    await axios.delete(`{process.env.REACT_APP_API_URL}/delete`, {
       data: { taskId },
       withCredentials: true,
     });
@@ -46,7 +46,7 @@ const TodoApp = () => {
   const navigate = useNavigate();
   const handleLogout =async () => {
     // Handle logout logic here (e.g., clear tokens or navigate to login)
-    let response = await axios.post('https://todo-app-backend-kappa-ecru.vercel.app/logout', {}, { withCredentials: true });
+    let response = await axios.post(`{process.env.REACT_APP_API_URL}/logout`, {}, { withCredentials: true });
     if (response.status === 200) {
       console.log("User logged out");
       navigate('/login');
