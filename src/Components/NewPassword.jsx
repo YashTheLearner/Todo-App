@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 const NewPassword = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [generatedOtp, setGeneratedOtp] = useState(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +53,7 @@ const NewPassword = () => {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/forgot`, {
         email,
         newPassword: password,
-        otp
+        userOTP: otp,
       });
 
       if (response.status === 200) {
