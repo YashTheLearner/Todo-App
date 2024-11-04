@@ -20,7 +20,7 @@ const EnterOtp = () => {
 
       if (response.status === 200) {
         setSuccessMessage('OTP verified successfully');
-        navigate('/login');
+        navigate('/');
       } else {
         setError('Invalid OTP. Please try again.');
       }
