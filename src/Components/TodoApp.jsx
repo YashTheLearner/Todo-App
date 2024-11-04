@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const TodoApp = () => {
   const [task, setTask] = useState('');
@@ -128,7 +128,7 @@ const TodoApp = () => {
               </li>
             ))
           ) : (
-            <p className="text-gray-400 text-center">No tasks added yet.</p>
+            <p className="text-gray-400 text-center"><Link to="/login"/>No tasks added yet.<Link/></p>
           )}
         </ul>
       </div>
