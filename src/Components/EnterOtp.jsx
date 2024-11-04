@@ -1,4 +1,6 @@
+import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const EnterOtp = () => {
   const [otp, setOtp] = useState('');
@@ -6,8 +8,7 @@ const EnterOtp = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Assuming '123456' is the demo OTP for testing purposes.
-  const demoOtp = '123456';
+  // Assuming '123456' is the demo OTP for testing purposes.;
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
@@ -16,18 +17,19 @@ const EnterOtp = () => {
     setSuccessMessage('');
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate async operation
+      let response = await axios.post(`${process.env.REACT_APP_API_URL}/verify`, { otp });
 
-      if (otp === demoOtp) {
-        setSuccessMessage('OTP verified successfully. You can now reset your password.');
-      } else {
+      if (response.status === 200) {
+        setSuccessMessage('OTP verified successfully');
+        useNavigate('/login');
+      }else{
         setError('Invalid OTP. Please try again.');
+      }}catch (error) {
+      if (error.response) {
+        setError(error.response.data.message || 'Something went wrong. Please try again.');
+      } else {
+        setError('Something went wrong. Please try again.');
       }
-    } catch {
-      setError('Something went wrong. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -110,5 +112,6 @@ const EnterOtp = () => {
     </div>
   );
 };
+}
 
 export default EnterOtp;
