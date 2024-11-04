@@ -147,7 +147,7 @@ const TodoApp = () => {
             ))
           ) : (
             <p className="text-gray-400 text-center">
-              No tasks added yet. <Link to="/login" className="text-blue-500">Login</Link>
+              No tasks added yet.
             </p>
           )}
         </ul>
