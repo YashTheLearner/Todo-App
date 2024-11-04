@@ -8,7 +8,7 @@ const EnterOtp = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Assuming '123456' is the demo OTP for testing purposes.;
+  const navigate = useNavigate(); // Use useNavigate outside the handleOtpSubmit function
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
@@ -21,15 +21,19 @@ const EnterOtp = () => {
 
       if (response.status === 200) {
         setSuccessMessage('OTP verified successfully');
-        useNavigate('/login');
-      }else{
+        navigate('/login'); // Use the navigate function correctly here
+      } else {
         setError('Invalid OTP. Please try again.');
-      }}catch (error) {
+      }
+    } catch (error) {
       if (error.response) {
         setError(error.response.data.message || 'Something went wrong. Please try again.');
       } else {
         setError('Something went wrong. Please try again.');
       }
+    } finally {
+      setIsLoading(false); // Ensure loading state is reset
+    }
   };
 
   return (
@@ -112,6 +116,5 @@ const EnterOtp = () => {
     </div>
   );
 };
-}
 
 export default EnterOtp;
